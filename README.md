@@ -1,0 +1,1 @@
+# SQR-Pasynkov-team
