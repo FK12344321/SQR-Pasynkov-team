@@ -4,7 +4,7 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
 from ..dependencies import *
 
@@ -21,11 +21,11 @@ router = APIRouter(tags=['auth'])
     },
     tags=['auth'],
 )
-def get_auth_login() -> Union[UserCredentials, Error]:
+def get_auth_login(user: Annotated[User, Depends(get_current_user_basic)]) -> Union[UserCredentials, Error]:
     """
     Login user
     """
-    return UserCredentials(access_token='access', refresh_token='<refresh>')
+    return UserCredentials(access_token=user.username, refresh_token=user.password)
 
 
 @router.post(
@@ -51,7 +51,7 @@ def post_auth_register(body: User) -> Union[UserCredentials, Error]:
     },
     tags=['auth'],
 )
-def get_auth_token() -> Union[UserCredentials, Error]:
+def get_auth_token(user: Annotated[User, Depends(get_current_user)]) -> Union[UserCredentials, Error]:
     """
     Refresh token
     """

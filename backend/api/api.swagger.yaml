@@ -14,6 +14,7 @@ paths:
     get:
       summary: Login user
       description: Login already existed user
+      operationId: login
       security:
         - BasicAuth: []
       tags:
@@ -47,6 +48,7 @@ paths:
     post:
       summary: Register user
       description: Register new user
+      operationId: register
       security: []
       tags:
         - auth
@@ -79,6 +81,7 @@ paths:
     get:
       summary: Refresh token
       description: Refresh token using refresh_token in Authorization header
+      operationId: refreshToken
       tags:
         - auth
       responses:

@@ -4,6 +4,38 @@
 
 from __future__ import annotations
 
-from typing import Union
+from typing import Union, Annotated
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPBasicCredentials, HTTPBasic, HTTPBearer
 
+from .internals.auth.user import check_user
 from .models import Error, User, UserCredentials
+
+
+basic_security = HTTPBasic()
+security = HTTPBearer()
+
+
+async def get_current_user_basic(credentials: Annotated[HTTPBasicCredentials, Depends(basic_security)]) -> User:
+    if not check_user(credentials.username, credentials.password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect username or password",
+            headers={"Authorization": "Basic"},
+        )
+    return User(
+        username=credentials.username,
+        password=credentials.password,
+    )
+
+
+async def get_current_user(token: Annotated[str, Depends(security)]):
+    if token != 'aboba':
+        return Error(
+            message='Basic Auth is not provided',
+            description='required Authorization header is missing'
+        )
+    return User(
+        username='aboba',
+        password='<PASSWORD>',
+    )
