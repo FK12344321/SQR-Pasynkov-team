@@ -1,0 +1,158 @@
+openapi: 3.0.0
+info:
+  title: InnoTrackify API
+  description: API used for our application InnoTrackify.
+  version: 0.1.0
+servers:
+  - url: http://localhost:8000/api
+    description: local server
+security:
+  - BearerAuth: []
+
+paths:
+  /auth/login:
+    get:
+      summary: Login user
+      description: Login already existed user
+      security:
+        - BasicAuth: []
+      tags:
+        - auth
+      responses:
+        '200':
+          description: User credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCredentials'
+        '401':
+          description: User credentials are incorrect (or no such user)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: User is not allowed to login
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/register:
+    post:
+      summary: Register user
+      description: Register new user
+      security: []
+      tags:
+        - auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: User credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCredentials'
+        '400':
+          description: User body is incorrect
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /auth/token:
+    get:
+      summary: Refresh token
+      description: Refresh token using refresh_token in Authorization header
+      tags:
+        - auth
+      responses:
+        '200':
+          description: Successfully refreshed token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserCredentials'
+        '401':
+          description: User is not authenticated (no token in header, or token is invalid)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: User is not authorized (it has no rights)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    BasicAuth:
+      type: http
+      description: |
+        Sends base64 encoded "username:password" string in Authorization header.
+        For example: Authorization: Basic ZGVtbzpwQDU1dzByZA==
+      scheme: basic
+    BearerAuth:
+      type: http
+      description: |
+        Sends Bearer token from /login or /token paths in Authorization header.
+        For example: Authorization: Bearer <long-long-token-without-braces>
+      scheme: bearer
+  schemas:
+    Error:
+      type: object
+      description: Basic object for error
+      properties:
+        message:
+          type: string
+          description: Simple message for user
+        description:
+          type: string
+          description: Technical description of the problem
+    User:
+      type: object
+      description: User's data used to sign in
+      properties:
+        username:
+          type: string
+          minLength: 1
+        password:
+          type: string
+          description: User's password
+          minLength: 5
+      required:
+        - username
+        - password
+    UserCredentials:
+      type: object
+      description: Access tokens used as client credentials
+      properties:
+        access_token:
+          type: string
+        refresh_token:
+          type: string
+      required:
+        - access_token
+        - refresh_token
