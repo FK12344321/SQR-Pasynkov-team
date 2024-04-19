@@ -4,9 +4,12 @@
 
 from __future__ import annotations
 
+from typing import Union
+
 from fastapi import APIRouter
 
 from backend.app.dependencies import *
+from backend.app.models import UserCredentials, Error
 
 router = APIRouter(tags=['auth'])
 

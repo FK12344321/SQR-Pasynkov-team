@@ -8,7 +8,6 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = 'users'
 
-    id = Column(Integer, primary_key=True)
     username = Column(String)
 
     activities = relationship('Activity', back_populates='user')
@@ -18,11 +17,11 @@ class Activity(Base):
     __tablename__ = 'activities'
 
     id = Column(Integer, primary_key=True)
-    activity_time = Column(String)
+    activity_type = Column(String)
     start_date = Column(DateTime)
     end_date = Column(DateTime)
 
-    user_id = Column(Integer, ForeignKey('users.id'))
+    username = Column(Integer, ForeignKey('users.username'))
     user = relationship('User', back_populates='activities')
 
 

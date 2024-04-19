@@ -27,6 +27,6 @@ class UserCredentials(BaseModel):
 
 
 class ActivityCreate(BaseModel):
-    activity_time: str
+    activity_type: str
     start_date: str
     end_date: str
