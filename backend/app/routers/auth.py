@@ -4,9 +4,9 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter
 
-from ..dependencies import *
+from backend.app.dependencies import *
 
 router = APIRouter(tags=['auth'])
 

@@ -4,14 +4,13 @@
 
 from __future__ import annotations
 
-from typing import Union, Annotated
+from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBasicCredentials, HTTPBasic, HTTPBearer
 
-from .internals.auth.user import check_user
-from .internals.auth.token import decode_token, create_token
-from .models import Error, User, UserCredentials
-
+from backend.app.internals.auth import check_user
+from backend.app.internals.auth import decode_token, create_token
+from backend.app.models import User
 
 basic_security = HTTPBasic()
 security = HTTPBearer()

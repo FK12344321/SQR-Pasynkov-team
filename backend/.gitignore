@@ -1,2 +1,5 @@
 .venv
 **/*.db
+*.http
+.idea
+**/__pycache__/*
