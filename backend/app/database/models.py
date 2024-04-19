@@ -8,7 +8,7 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = 'users'
 
-    username = Column(String)
+    username = Column(String, primary_key=True)
 
     activities = relationship('Activity', back_populates='user')
 

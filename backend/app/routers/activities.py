@@ -2,9 +2,9 @@ from __future__ import annotations
 
 from fastapi import APIRouter
 
-from backend.app.dependencies import *
-from backend.app.models import UserCredentials, Error, ActivityCreate
-from backend.app.database.crud import create_activity
+from app.dependencies import *
+from app.models import UserCredentials, Error, ActivityCreate
+from app.database.crud import create_activity
 
 router = APIRouter(tags=['activities'])
 

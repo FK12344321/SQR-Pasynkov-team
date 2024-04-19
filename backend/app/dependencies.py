@@ -8,9 +8,9 @@ from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBasicCredentials, HTTPBasic, HTTPBearer
 
-from backend.app.internals.auth import check_user
-from backend.app.internals.auth import decode_token, create_token
-from backend.app.models import User
+from app.internals.auth.user import check_user
+from app.internals.auth.token import decode_token, create_token
+from app.models import User
 
 basic_security = HTTPBasic()
 security = HTTPBearer()

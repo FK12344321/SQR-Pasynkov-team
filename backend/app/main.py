@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from fastapi import FastAPI
 
-from backend.app.routers import auth
+from app.routers import auth, activities
 
 app = FastAPI(
     title='InnoTrackify API',
@@ -16,6 +16,7 @@ app = FastAPI(
 )
 
 app.include_router(auth.router)
+app.include_router(activities.router)
 
 
 @app.get("/")

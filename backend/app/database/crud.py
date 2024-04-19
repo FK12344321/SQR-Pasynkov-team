@@ -1,8 +1,8 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Session
-from backend.app.models import ActivityCreate
-from backend.app.database.models import User, Activity
+from app.models import ActivityCreate
+from app.database.models import User, Activity
 
 Base = declarative_base()
 engine = create_engine('sqlite:///pasynkov.db')

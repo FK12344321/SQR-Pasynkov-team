@@ -1,4 +1,4 @@
-from backend.app.models import User
+from app.models import User
 
 
 def decode_token(token: str) -> User:
