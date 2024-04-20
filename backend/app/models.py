@@ -4,7 +4,8 @@
 
 from __future__ import annotations
 
-from typing import Optional
+from typing import Optional, Union
+from datetime import datetime
 
 from pydantic import BaseModel, Field, constr
 
@@ -28,5 +29,20 @@ class UserCredentials(BaseModel):
 
 class ActivityCreate(BaseModel):
     activity_type: str
-    start_date: str
-    end_date: str
+    start_date: datetime
+    end_date: datetime
+
+
+class Activity(BaseModel):
+    activity_type: str
+    start_date: datetime
+    end_date: datetime
+    id: int
+
+
+class ActivitiesRequest(BaseModel):
+    page_index: int
+    page_size: int
+    activity_type: Union[int, None]
+    start_date: Union[datetime, None]
+    end_date: Union[datetime, None]
