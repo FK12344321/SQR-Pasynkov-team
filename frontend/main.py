@@ -14,6 +14,10 @@ def authenticate(username, password):
         return False
 
 
+def sign_up(username, password):
+    return True
+
+
 def convert_seconds(seconds):
     hours = seconds // 3600
     minutes = (seconds % 3600) // 60
@@ -35,13 +39,20 @@ def main():
     if 'auth' not in st.session_state or st.session_state['auth'] is False:
         username = st.text_input("Username")
         password = st.text_input("Password", type="password")
-        login_button = st.button("Login")
+        cols = st.columns(7)
+        with cols[0]:
+            login_button = st.button("Login")
+        with cols[1]:
+            sign_up_button = st.button("Sign up")
         if login_button:
             if authenticate(username, password):
                 st.session_state['auth'] = True
                 st.session_state['page'] = 'timer'
             else:
                 st.error("Invalid username or password")
+        if sign_up_button:
+            if sign_up(username, password):
+                st.success('Sign up successful')
 
     else:
         page = st.sidebar.radio("Pages", ['Use timer', 'Add activity', 'Show activities'], key='sidebar')
@@ -50,9 +61,12 @@ def main():
         if st.session_state['page'] == 'Use timer':
             activity_select = st.selectbox("Choose an activity", activities)
 
+            cols = st.columns(5)
+            with cols[0]:
+                play_button = st.button("Play")
+            with cols[1]:
+                pause_button = st.button("Pause/Reset")
             timer_output = st.empty()
-            play_button = st.button("Play")
-            pause_button = st.button("Pause/Reset")
 
             if play_button:
                 st.session_state['elapsed_time'] = -1
