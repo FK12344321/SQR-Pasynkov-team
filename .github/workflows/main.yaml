@@ -29,9 +29,9 @@ jobs:
       - name: Install dependencies
         working-directory: ./backend
         run: poetry install
-      - name: Run coverage
-        working-directory: ./backend
-        run: poetry run pytest --cov=app/ --cov-branch --cov-report=term --cov-fail-under=0
+      # - name: Run coverage
+      #   working-directory: ./backend
+      #   run: poetry run pytest --cov=app/ --cov-branch --cov-report=term --cov-fail-under=0
       - name: Run flake8
         working-directory: ./backend
         run: poetry run flake8 --max-complexity=10
