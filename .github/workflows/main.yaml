@@ -41,6 +41,10 @@ jobs:
         continue-on-error: true
         working-directory: ./backend
         run: poetry run bandit -r app/
+      
+      - name: Check for any previous errors
+        if: ${{ failure() }}
+        run: exit 1
 
   unit-tests:
     name: Unit Tests
