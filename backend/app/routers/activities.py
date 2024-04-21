@@ -36,5 +36,3 @@ def add_activity(activity: ActivityCreate) -> Activity:
 )
 def add_activity(activity_params: ActivitiesRequest) -> List[Activity]:
     return get_activities(activity_params, "user")
-
-
