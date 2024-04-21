@@ -5,8 +5,8 @@ on:
   pull_request:
 
 jobs:
-  setup-and-lint:
-    name: Setup, Lint, and Security Check
+  coverage:
+    name: Coverage
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
     steps:
@@ -30,21 +30,64 @@ jobs:
         working-directory: ./backend
         run: poetry install
       - name: Run coverage
-        continue-on-error: true
         working-directory: ./backend
         run: poetry run pytest --cov=app/ --cov-branch --cov-report=term --cov-fail-under=0
+  
+  flake:
+    name: Flake 8
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: '1.7.1'
+      - name: Cache Poetry virtual environment
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ hashFiles('backend/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+      - name: Install dependencies
+        working-directory: ./backend
+        run: poetry install
       - name: Run flake8
-        continue-on-error: true
         working-directory: ./backend
         run: poetry run flake8 --max-complexity=10
+  
+  bandit:
+    name: Bandit
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: '1.7.1'
+      - name: Cache Poetry virtual environment
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ hashFiles('backend/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+      - name: Install dependencies
+        working-directory: ./backend
+        run: poetry install
       - name: Run bandit
-        continue-on-error: true
         working-directory: ./backend
         run: poetry run bandit -r app/
-      
-      - name: Check for any previous errors
-        if: ${{ failure() }}
-        run: exit 1
 
   unit-tests:
     name: Unit Tests
