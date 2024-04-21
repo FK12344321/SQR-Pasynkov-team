@@ -2,11 +2,7 @@ name: SQR-Pasynkov-actions
 
 on:
   push:
-    branches:
-      - main
   pull_request:
-    branches:
-      - main
 
 jobs:
   setup-and-lint:
@@ -27,16 +23,15 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.cache/pypoetry
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ runner.os }}-poetry-${{ hashFiles('backend/poetry.lock') }}
           restore-keys: |
             ${{ runner.os }}-poetry-
       - name: Install dependencies
         working-directory: ./backend
         run: poetry install
-
       - name: Run coverage
-      working-directory: ./backend
-        run: poetry run pytest --cov=app/ --cov-branch --cov-report=term# --cov-fail-under=60
+        working-directory: ./backend
+        run: poetry run pytest --cov=app/ --cov-branch --cov-report=term # --cov-fail-under=60
       - name: Run flake8
         working-directory: ./backend
         run: poetry run flake8 --max-complexity=10
@@ -62,7 +57,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.cache/pypoetry
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ runner.os }}-poetry-${{ hashFiles('backend/poetry.lock') }}
           restore-keys: |
             ${{ runner.os }}-poetry-
       - name: Install dependencies
@@ -88,7 +83,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.cache/pypoetry
-          key: ${{ runner.os }}-poetry-${{ hashFiles('**/poetry.lock') }}
+          key: ${{ runner.os }}-poetry-${{ hashFiles('backend/poetry.lock') }}
           restore-keys: |
             ${{ runner.os }}-poetry-
       - name: Install dependencies
