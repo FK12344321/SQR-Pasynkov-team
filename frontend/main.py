@@ -142,17 +142,17 @@ def get_list():
 def main():
     st.title("InnoTrackify")
 
-    # if 'auth' not in st.session_state or st.session_state['auth'] is False:
-    #     get_auth_page()
-    # else:
-    page = st.sidebar.radio("Pages", ['Use timer', 'Add activity', 'Show activities'], key='sidebar')
-    st.session_state['page'] = page
-    if st.session_state['page'] == 'Use timer':
-        get_timer_page()
-    elif st.session_state['page'] == 'Add activity':
-        get_form_page()
-    elif st.session_state['page'] == 'Show activities':
-        get_list()
+    if 'auth' not in st.session_state or st.session_state['auth'] is False:
+        get_auth_page()
+    else:
+        page = st.sidebar.radio("Pages", ['Use timer', 'Add activity', 'Show activities'], key='sidebar')
+        st.session_state['page'] = page
+        if st.session_state['page'] == 'Use timer':
+            get_timer_page()
+        elif st.session_state['page'] == 'Add activity':
+            get_form_page()
+        elif st.session_state['page'] == 'Show activities':
+            get_list()
 
 
 if __name__ == "__main__":
