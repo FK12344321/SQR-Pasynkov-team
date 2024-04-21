@@ -23,9 +23,9 @@ def create_activity(activity: ActivityCreate, username: str) -> Activity:
     session.add(db_activity)
     session.commit()
     created_activity = Activity(activity_type=db_activity.activity_type,
-                                       start_date=db_activity.start_date,
-                                       end_date=db_activity.end_date,
-                                       id=db_activity.id)
+                                start_date=db_activity.start_date,
+                                end_date=db_activity.end_date,
+                                id=db_activity.id)
     session.close()
     return created_activity
 
@@ -53,8 +53,8 @@ def get_activities(activity_params: ActivitiesRequest, username: str) -> List[Ac
     limit = activity_params.page_size
 
     query = session.query(Activity).filter(*conditions) \
-                                    .order_by(Activity.start_date)\
-                                    .limit(limit).offset(offset)
+        .order_by(Activity.start_date)\
+        .limit(limit).offset(offset)
 
     activities = []
 

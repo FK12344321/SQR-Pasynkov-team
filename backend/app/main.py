@@ -12,7 +12,8 @@ app = FastAPI(
     title='InnoTrackify API',
     description='API used for our application InnoTrackify.',
     version='0.1.0',
-    servers=[{'url': 'http://localhost:8000/api', 'description': 'local server'}],
+    servers=[{'url': 'http://localhost:8000/api',
+              'description': 'local server'}],
 )
 
 app.include_router(auth.router)
