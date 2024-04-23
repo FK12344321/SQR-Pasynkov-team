@@ -23,3 +23,4 @@ app.include_router(activities.router)
 @app.get("/")
 async def root():
     return {"message": "Gateway of the App"}
+
