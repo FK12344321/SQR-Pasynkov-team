@@ -37,6 +37,19 @@ def validate_time_format(input_text):
         return False
 
 
+def post_activity(hour, minutes, seconds, activity_select):
+    time_delta = datetime.timedelta(hours=hour, minutes=minutes, seconds=seconds)
+    end_date = datetime.datetime.now()
+    start_date = end_date - time_delta
+    body = {
+        "activity_type": activity_select,
+        "start_date": start_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+        "end_date": end_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+    }
+    r = requests.post(f'{API}/activity', data=json.dumps(body))
+    return r
+
+
 def get_auth_page():
     username = st.text_input("Username")
     password = st.text_input("Password", type="password")
@@ -78,15 +91,7 @@ def get_timer_page():
     if save_button:
         if 'paused_time' in st.session_state:
             hour, minutes, seconds = convert_seconds(st.session_state['paused_time'])
-            time_delta = datetime.timedelta(hours=hour, minutes=minutes, seconds=seconds)
-            end_date = datetime.datetime.now()
-            start_date = end_date - time_delta
-            body = {
-                "activity_type": activity_select,
-                "start_date": start_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-                "end_date": end_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-            }
-            r = requests.post(f'{API}/activity', data=json.dumps(body))
+            r = post_activity(hour, minutes, seconds, activity_select)
             if r.status_code == 200:
                 st.success(f"Saved activity: {activity_select}, Time: {hour}:{minutes}:{seconds}")
                 del st.session_state['paused_time']
@@ -108,15 +113,16 @@ def get_form_page():
         if submit_button:
             if validate_time_format(time_select):
                 hours, minutes, seconds = map(int, time_select.split(':'))
-                time_delta = datetime.timedelta(hours=hours, minutes=minutes, seconds=seconds)
-                end_date = datetime.datetime.now()
-                start_date = end_date - time_delta
-                body = {
-                  "activity_type": activity_select,
-                  "start_date": start_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-                  "end_date": end_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-                }
-                r = requests.post(f'{API}/activity', data=json.dumps(body))
+                # time_delta = datetime.timedelta(hours=hours, minutes=minutes, seconds=seconds)
+                # end_date = datetime.datetime.now()
+                # start_date = end_date - time_delta
+                # body = {
+                #   "activity_type": activity_select,
+                #   "start_date": start_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
+                #   "end_date": end_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+                # }
+                # r = requests.post(f'{API}/activity', data=json.dumps(body))
+                r = activity_select(hours, minutes, seconds, activity_select)
                 if r.status_code == 200:
                     st.success(f"Saved activity: {activity_select}, Time: {time_select}")
                 else:
