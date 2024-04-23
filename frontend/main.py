@@ -113,15 +113,6 @@ def get_form_page():
         if submit_button:
             if validate_time_format(time_select):
                 hours, minutes, seconds = map(int, time_select.split(':'))
-                # time_delta = datetime.timedelta(hours=hours, minutes=minutes, seconds=seconds)
-                # end_date = datetime.datetime.now()
-                # start_date = end_date - time_delta
-                # body = {
-                #   "activity_type": activity_select,
-                #   "start_date": start_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-                #   "end_date": end_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-                # }
-                # r = requests.post(f'{API}/activity', data=json.dumps(body))
                 r = activity_select(hours, minutes, seconds, activity_select)
                 if r.status_code == 200:
                     st.success(f"Saved activity: {activity_select}, Time: {time_select}")
