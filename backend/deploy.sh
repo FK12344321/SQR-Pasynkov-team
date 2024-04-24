@@ -8,5 +8,5 @@ ssh -i ~/.ssh/ssd root@10.90.137.146 <<EOF
 docker pull fk12344321/sqr-backend:latest
 docker stop backend
 docker rm backend
-docker run --name backend -d --rm -p 8000:8000 fk12344321/sqr-backend:latest
+docker run --name backend -v /pasynkov.db:/pasynkov.db -d --rm -p 8000:8000 fk12344321/sqr-backend:latest
 EOF

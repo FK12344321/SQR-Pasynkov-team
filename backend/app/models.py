@@ -43,6 +43,6 @@ class Activity(BaseModel):
 class ActivitiesRequest(BaseModel):
     page_index: int
     page_size: int
-    activity_type: Union[int, None]
+    activity_type: Union[str, None]
     start_date: Union[datetime, None]
     end_date: Union[datetime, None]
