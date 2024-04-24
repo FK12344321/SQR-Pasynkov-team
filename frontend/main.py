@@ -11,13 +11,37 @@ API = os.environ.get('API_PATH', "http://10.90.137.146:8000")
 
 
 def authenticate(username, password):
-    if username == "1" and password == "2":
-        return True
-    else:
+    body = {
+        "username": username,
+        "password": password,
+    }
+    r = requests.get(f'{API}/auth/login', data=json.dumps(body))
+    if r.status_code != 200:
         return False
+    st.session_state['access_token'] = r.json()['access_token']
+    st.session_state['refresh_token'] = r.json()['refresh_token']
+    return True
 
 
 def sign_up(username, password):
+    body = {
+        "username": username,
+        "password": password,
+    }
+    r = requests.post(f'{API}/auth/register', data=json.dumps(body))
+    if r.status_code != 200:
+        return False
+    st.session_state['access_token'] = r.json()['access_token']
+    st.session_state['refresh_token'] = r.json()['refresh_token']
+    return True
+
+
+def renew_token():
+    r = requests.get(f'{API}/auth/token', data=json.dumps({'refresh_token': st.session_state['refresh_token']}))
+    if r.status_code != 200:
+        return False
+    st.session_state['access_token'] = r.json()['access_token']
+    st.session_state['refresh_token'] = r.json()['refresh_token']
     return True
 
 
@@ -46,7 +70,12 @@ def post_activity(hour, minutes, seconds, activity_select):
         "start_date": start_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
         "end_date": end_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
     }
-    r = requests.post(f'{API}/activity', data=json.dumps(body))
+    headers = {'Authorization': 'Bearer ' + st.session_state['access_token']}
+    r = requests.post(f'{API}/activity', data=json.dumps(body), headers=headers)
+    if r.status_code == 401:
+        renew_token()
+        headers = {'Authorization': 'Bearer ' + st.session_state['access_token']}
+        r = requests.get(f'{API}/activity', data=json.dumps(body), headers=headers)
     return r
 
 
@@ -67,7 +96,11 @@ def get_auth_page():
             st.error("Invalid username or password")
     if sign_up_button:
         if sign_up(username, password):
-            st.success('Sign up successful')
+            st.session_state['auth'] = True
+            st.session_state['page'] = 'timer'
+            st.rerun()
+        else:
+            st.error("Error with signing up")
 
 
 def get_timer_page():
@@ -141,7 +174,12 @@ def get_list():
         "start_date": start_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
         "end_date": end_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
     }
-    r = requests.get(f'{API}/activity', data=json.dumps(body))
+    headers = {'Authorization': 'Bearer ' + st.session_state['access_token']}
+    r = requests.get(f'{API}/activity', data=json.dumps(body), headers=headers)
+    if r.status_code == 401:
+        renew_token()
+        headers = {'Authorization': 'Bearer ' + st.session_state['access_token']}
+        r = requests.get(f'{API}/activity', data=json.dumps(body), headers=headers)
     if r.status_code != 200:
         return
     array = r.json()
