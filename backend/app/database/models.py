@@ -1,6 +1,8 @@
+from datetime import datetime
+
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship, sessionmaker
+from sqlalchemy.orm import relationship
 
 Base = declarative_base()
 
@@ -8,7 +10,10 @@ Base = declarative_base()
 class User(Base):
     __tablename__ = 'users'
 
-    username = Column(String, primary_key=True)
+    username = Column(String, primary_key=True, nullable=False, unique=True)
+    password = Column(String, nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = Column(DateTime, default=datetime.utcnow, nullable=False)
 
     activities = relationship('Activity', back_populates='user')
 

@@ -1,14 +1,26 @@
-from app.models import User, UserCredentials
+import base64
+
+from app.models import User, UserCredentials, IncorrectToken
+from app.database.users import get_user_by_username
 
 
 def decode_token(token: str) -> User:
     """Decodes a Bearer token. Can raise IncorrectToken exception."""
-    return User(username=token, password='booba')
-
-
-def create_token(user: User) -> UserCredentials:
-    return UserCredentials(access_token=user.username, refresh_token=user.password)
+    try:
+        token_data = base64.b64decode(token.encode('utf-8')).decode('utf-8')
+        username, reversed_username = token_data.split(sep=' ', maxsplit=1)
+        print(f'decode_token: decoded data: username={username}, reversed={reversed_username}')
+        if username != reversed_username[::-1]:
+            raise IncorrectToken('Bearer')
+        return get_user_by_username(username)
+    except Exception:
+        print(f'decode_token: incorrect token: {token}')
+        raise IncorrectToken('Bearer')
 
 
 def generate_token_from_user(user: User) -> UserCredentials:
-    return UserCredentials(access_token=user.username, refresh_token=user.password)
+    print(f'generate_token_from_user: username={user.username}, password={user.password}')
+    token = f"{user.username} {user.username[::-1]}"
+    token_bytes = token.encode('utf-8')
+    base64_token = base64.b64encode(token_bytes).decode('utf-8')
+    return UserCredentials(access_token=base64_token, refresh_token=base64_token)

@@ -1,6 +1,7 @@
-import secrets
+import bcrypt
 
 from app.models import User
+from app.database.users import get_user_by_username, create_user as create_db_user
 
 
 def check_user(username: str, password: str) -> bool:
@@ -9,22 +10,31 @@ def check_user(username: str, password: str) -> bool:
     User with the given username must exist and password should be correct.
     :return: bool value indicating if the given user is correct.
     """
-    current_username_bytes = username.encode("utf8")
-    correct_username_bytes = b"aboba"
-    is_correct_username = secrets.compare_digest(
-        current_username_bytes, correct_username_bytes
-    )
-    current_password_bytes = password.encode("utf8")
-    correct_password_bytes = b"booba"
-    is_correct_password = secrets.compare_digest(
-        current_password_bytes, correct_password_bytes
-    )
-    return is_correct_username and is_correct_password
+    print(f'check_user: username: {username}, password: {password}')
+    try:
+        user = get_user_by_username(username)
+    except ValueError:
+        return False
+
+    hashed_password = user.password.encode('utf-8')
+    hashed_x2 = bcrypt.hashpw(password.encode('utf-8'), hashed_password)
+    is_correct_password = hashed_x2 == hashed_password
+    print(f'check_user: is_correct_password: {is_correct_password}\n\tx1: {hashed_password}\n\tx2: {hashed_x2}')
+    return is_correct_password
 
 
 def is_exist(username: str) -> bool:
-    return username == 'aboba'
+    try:
+        user = get_user_by_username(username)
+        return user is not None
+    except ValueError:
+        return False
 
 
 def create_user(user: User) -> User:
-    return user
+    user.password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    return create_db_user(user)
+
+
+def get_user(username: str) -> User:
+    return get_user_by_username(username)
