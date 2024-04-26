@@ -46,3 +46,13 @@ class ActivitiesRequest(BaseModel):
     activity_type: Union[str, None]
     start_date: Union[datetime, None]
     end_date: Union[datetime, None]
+
+
+class IncorrectUser(Exception):
+    def __init__(self, username: str):
+        self.username = username
+
+
+class IncorrectToken(Exception):
+    def __init__(self, token_type: str):
+        self.token_type = token_type

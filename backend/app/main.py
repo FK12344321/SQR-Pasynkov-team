@@ -4,9 +4,11 @@
 
 from __future__ import annotations
 
-from fastapi import FastAPI
+from fastapi import FastAPI, Request, status
+from fastapi.responses import JSONResponse
 
 from app.routers import auth, activities
+from app.models import Error, IncorrectUser, IncorrectToken
 
 app = FastAPI(
     title='InnoTrackify API',
@@ -25,3 +27,24 @@ app.include_router(activities.router)
 async def root():
     return {"message": "Gateway of the App"}
 
+
+@app.exception_handler(IncorrectUser)
+async def incorrect_user_exception_handler(request: Request, exc: IncorrectUser):
+    return JSONResponse(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        content=Error(
+            message='Incorrect username or password',
+            description='Try to change your username or password',
+        ).model_dump(mode='json')
+    )
+
+
+@app.exception_handler(IncorrectToken)
+async def incorrect_token_exception_handler(request: Request, exc: IncorrectUser):
+    return JSONResponse(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        content=Error(
+            message=f'Incorrect authorization {exc.token_type} token',
+            description='Your token must be taken from login() or refresh_token() methods',
+        ).model_dump(mode='json')
+    )

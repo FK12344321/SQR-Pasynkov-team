@@ -5,12 +5,12 @@
 from __future__ import annotations
 
 from typing import Annotated
-from fastapi import Depends, HTTPException, status
-from fastapi.security import HTTPBasicCredentials, HTTPBasic, HTTPBearer
+from fastapi import Depends
+from fastapi.security import HTTPBasicCredentials, HTTPBasic, HTTPBearer, HTTPAuthorizationCredentials
 
 from app.internals.auth.user import check_user
 from app.internals.auth.token import decode_token, create_token
-from app.models import User
+from app.models import User, Error, IncorrectUser, IncorrectToken
 
 basic_security = HTTPBasic()
 security = HTTPBearer()
@@ -18,23 +18,15 @@ security = HTTPBearer()
 
 async def get_current_user_basic(credentials: Annotated[HTTPBasicCredentials, Depends(basic_security)]) -> User:
     if not check_user(credentials.username, credentials.password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password",
-            headers={"Authorization": "Basic"},
-        )
+        raise IncorrectUser(credentials.username)
     return User(
         username=credentials.username,
         password=credentials.password,
     )
 
 
-async def get_current_user(token: Annotated[str, Depends(security)]):
-    user = decode_token(token)
+async def get_current_user(token: Annotated[HTTPAuthorizationCredentials, Depends(security)]) -> User:
+    user = decode_token(token.credentials)
     if not check_user(user.username, user.password):
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail='Incorrect authorization Bearer token',
-            headers={"Authorization": "Bearer"},
-        )
-    return create_token(user)
+        raise IncorrectToken('Bearer')
+    return user

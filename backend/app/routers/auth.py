@@ -7,9 +7,11 @@ from __future__ import annotations
 from typing import Union
 
 from fastapi import APIRouter
+from fastapi.responses import JSONResponse
 
 from app.dependencies import *
 from app.models import UserCredentials, Error
+from app.internals.auth import token, user as auth_user
 
 router = APIRouter(tags=['auth'])
 
@@ -28,20 +30,32 @@ def login(user: Annotated[User, Depends(get_current_user_basic)]) -> Union[UserC
     """
     Login user
     """
-    return UserCredentials(access_token=user.username, refresh_token=user.password)
+    return token.generate_token_from_user(user)
 
 
 @router.post(
     '/auth/register',
     response_model=UserCredentials,
-    responses={'400': {'model': Error}, '500': {'model': Error}},
+    responses={
+        '400': {'model': Error},
+        '500': {'model': Error},
+    },
     tags=['auth'],
 )
-def register(body: User) -> Union[UserCredentials, Error]:
+def register(user: User) -> Union[UserCredentials, Error]:
     """
     Register user
     """
-    return Error(message='User is already registered')
+    if auth_user.is_exist(user.username):
+        return JSONResponse(
+            status_code=400,
+            content=Error(
+                message='User is already registered',
+                description='User with this name already exists',
+            ).model_dump(mode='json')
+        )
+    new_user = auth_user.create_user(user)
+    return token.generate_token_from_user(new_user)
 
 
 @router.get(
@@ -58,4 +72,4 @@ def refresh_token(user: Annotated[User, Depends(get_current_user)]) -> Union[Use
     """
     Refresh token
     """
-    return UserCredentials(access_token=user.username, refresh_token=user.password)
+    return token.generate_token_from_user(user)
