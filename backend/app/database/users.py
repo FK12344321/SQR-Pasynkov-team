@@ -14,9 +14,7 @@ def get_user_by_username(username: str) -> User:
     db_user = session.query(DB_User).filter_by(username=username).first()
     session.close()
     if db_user is None:
-        print(f'get_user_by_username: user not found: {username}')
         raise ValueError("User not found")
-    print(f'get_user_by_username: user found: {db_user.username}:{db_user.password}')
     return User(
         username=db_user.username,
         password=db_user.password,

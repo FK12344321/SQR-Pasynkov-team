@@ -10,7 +10,6 @@ def check_user(username: str, password: str) -> bool:
     User with the given username must exist and password should be correct.
     :return: bool value indicating if the given user is correct.
     """
-    print(f'check_user: username: {username}, password: {password}')
     try:
         user = get_user_by_username(username)
     except ValueError:
@@ -19,7 +18,6 @@ def check_user(username: str, password: str) -> bool:
     hashed_password = user.password.encode('utf-8')
     hashed_x2 = bcrypt.hashpw(password.encode('utf-8'), hashed_password)
     is_correct_password = hashed_x2 == hashed_password
-    print(f'check_user: is_correct_password: {is_correct_password}\n\tx1: {hashed_password}\n\tx2: {hashed_x2}')
     return is_correct_password
 
 
