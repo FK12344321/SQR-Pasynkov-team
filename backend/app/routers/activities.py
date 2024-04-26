@@ -1,9 +1,11 @@
 from __future__ import annotations
 
 from typing import List
+from datetime import datetime
 
 from fastapi import APIRouter
 
+from app.dependencies import *
 from app.models import Error, ActivityCreate, Activity, ActivitiesRequest
 from app.database.crud import create_activity, get_activities
 
@@ -20,8 +22,8 @@ router = APIRouter(tags=['activities'])
     },
     tags=['activities'],
 )
-def add_activity(activity: ActivityCreate) -> Activity:
-    return create_activity(activity, "user")
+def add_activity(user: Annotated[User, Depends(get_current_user)], activity: ActivityCreate) -> Activity:
+    return create_activity(activity, user.username)
 
 
 @router.get(
@@ -34,5 +36,14 @@ def add_activity(activity: ActivityCreate) -> Activity:
     },
     tags=['activities'],
 )
-def get_activity(activity_params: ActivitiesRequest) -> List[Activity]:
-    return get_activities(activity_params, "user")
+def get_activity(user: Annotated[User, Depends(get_current_user)],
+                 page_index: int, page_size: int, activity_type: str | None = None,
+                 start_date: datetime | None = None, end_date: datetime | None = None,
+                 ) -> List[Activity]:
+    return get_activities(ActivitiesRequest(
+        page_index=page_index,
+        page_size=page_size,
+        activity_type=activity_type,
+        start_date=start_date,
+        end_date=end_date,
+    ), user.username)
