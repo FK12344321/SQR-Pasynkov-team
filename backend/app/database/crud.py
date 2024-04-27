@@ -1,14 +1,7 @@
 from typing import List
 
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 from app.models import ActivityCreate, Activity, ActivitiesFilter
-from app.database.models import Activity as DB_Activity
-
-Base = declarative_base()
-engine = create_engine('sqlite:///pasynkov.db')
-session_maker = sessionmaker(bind=engine)
+from app.database.models import session_maker, Activity as DB_Activity
 
 
 def create_activity(
