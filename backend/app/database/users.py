@@ -1,11 +1,7 @@
-from typing import List
 from datetime import datetime
 
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, Session
 from app.models import User
-from app.database.models import User as DB_User, Activity
+from app.database.models import User as DB_User
 from app.database.crud import session_maker
 
 

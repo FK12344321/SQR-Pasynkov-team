@@ -30,7 +30,9 @@ def is_exist(username: str) -> bool:
 
 
 def create_user(user: User) -> User:
-    user.password = bcrypt.hashpw(user.password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    pwd = user.password.encode('utf-8')
+    hashed_pwd = bcrypt.hashpw(pwd, bcrypt.gensalt())
+    user.password = hashed_pwd.decode('utf-8')
     return create_db_user(user)
 
 
