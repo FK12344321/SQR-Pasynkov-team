@@ -147,7 +147,7 @@ def get_form_page():
         if submit_button:
             if validate_time_format(time_select):
                 hours, minutes, seconds = map(int, time_select.split(':'))
-                r = activity_select(hours, minutes, seconds, activity_select)
+                r = post_activity(hours, minutes, seconds, activity_select)
                 if r.status_code == 200:
                     st.success(f"Saved activity: {activity_select}, Time: {time_select}")
                 else:
