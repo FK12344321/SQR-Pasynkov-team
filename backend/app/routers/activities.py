@@ -1,12 +1,12 @@
 from __future__ import annotations
 
-from typing import List
+from typing import List, Annotated
 from datetime import datetime
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
-from app.dependencies import *
-from app.models import Error, ActivityCreate, Activity, ActivitiesRequest
+from app.dependencies import get_current_user
+from app.models import ActivityCreate, Activity, ActivitiesRequest, User, Error
 from app.database.crud import create_activity, get_activities
 
 router = APIRouter(tags=['activities'])
@@ -22,7 +22,10 @@ router = APIRouter(tags=['activities'])
     },
     tags=['activities'],
 )
-def add_activity(user: Annotated[User, Depends(get_current_user)], activity: ActivityCreate) -> Activity:
+def add_activity(
+        user: Annotated[User, Depends(get_current_user)],
+        activity: ActivityCreate,
+) -> Activity:
     return create_activity(activity, user.username)
 
 
@@ -36,10 +39,14 @@ def add_activity(user: Annotated[User, Depends(get_current_user)], activity: Act
     },
     tags=['activities'],
 )
-def get_activity(user: Annotated[User, Depends(get_current_user)],
-                 page_index: int, page_size: int, activity_type: str | None = None,
-                 start_date: datetime | None = None, end_date: datetime | None = None,
-                 ) -> List[Activity]:
+def get_activity(
+        user: Annotated[User, Depends(get_current_user)],
+        page_index: int,
+        page_size: int,
+        activity_type: str | None = None,
+        start_date: datetime | None = None,
+        end_date: datetime | None = None,
+) -> List[Activity]:
     return get_activities(ActivitiesRequest(
         page_index=page_index,
         page_size=page_size,

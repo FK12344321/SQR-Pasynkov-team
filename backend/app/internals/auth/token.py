@@ -10,7 +10,9 @@ def decode_token(token: str) -> User:
     settings = get_settings()
     try:
         header_data = jwt.get_unverified_header(token)
-        payload_data = jwt.decode(token, key=settings.auth_token_secret, algorithms=[header_data['alg'], ])
+        payload_data = jwt.decode(token,
+                                  key=settings.auth_token_secret,
+                                  algorithms=[header_data['alg'], ])
         return get_user_by_username(payload_data['username'])
     except Exception as error:
         print("Can't decode token, error:", error)
