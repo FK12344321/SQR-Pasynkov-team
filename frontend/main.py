@@ -7,15 +7,15 @@ import requests
 import json
 import os
 
+from requests.auth import HTTPBasicAuth
+
+
 API = os.environ.get('API_PATH', "http://10.90.137.146:8000")
 
 
 def authenticate(username, password):
-    body = {
-        "username": username,
-        "password": password,
-    }
-    r = requests.get(f'{API}/auth/login', data=json.dumps(body))
+    basic_auth = HTTPBasicAuth(username, password)
+    r = requests.get(f'{API}/auth/login', auth=basic_auth)
     if r.status_code != 200:
         return False
     st.session_state['access_token'] = r.json()['access_token']
@@ -167,19 +167,19 @@ def get_list():
     page_size = 5
     page_number = st.number_input("Page Number", min_value=1, value=1)
 
-    body = {
-        "page_index": page_number,
-        "page_size": page_size,
-        "activity_type": None if activity_select == '' else activity_select,
-        "start_date": start_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ"),
-        "end_date": end_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-    }
+    activity_filter =\
+        (f"?page_index={page_number}"
+         f"&page_size={page_size}"
+         f"&start_date={start_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")}"
+         f"&end_date={end_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")}")
+    if activity_select:
+        activity_filter += f"&activity_type={activity_select}"
     headers = {'Authorization': 'Bearer ' + st.session_state['access_token']}
-    r = requests.get(f'{API}/activity', data=json.dumps(body), headers=headers)
+    r = requests.get(f'{API}/activity' + activity_filter, headers=headers)
     if r.status_code == 401:
         renew_token()
         headers = {'Authorization': 'Bearer ' + st.session_state['access_token']}
-        r = requests.get(f'{API}/activity', data=json.dumps(body), headers=headers)
+        r = requests.get(f'{API}/activity' + activity_filter, headers=headers)
     if r.status_code != 200:
         return
     array = r.json()
