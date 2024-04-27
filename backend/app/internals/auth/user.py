@@ -1,7 +1,7 @@
 import bcrypt
 
 from app.models import User
-from app.database.users import get_user_by_username, create_user as create_db_user
+from app.database.users import get_user_by_username, create_user as create_db_user  # noqa: E501
 
 
 def check_user(username: str, password: str) -> bool:
