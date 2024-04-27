@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from typing import Annotated
 from fastapi import Depends
-from fastapi.security import HTTPBasicCredentials, HTTPBasic, HTTPBearer, HTTPAuthorizationCredentials
+from fastapi.security import HTTPBasicCredentials, HTTPBasic, HTTPBearer, HTTPAuthorizationCredentials  # noqa: E501
 
 from app.internals.auth.user import check_user, get_user
 from app.internals.auth.token import decode_token

@@ -1,14 +1,14 @@
 from __future__ import annotations
 
-from typing import Optional, Union
+from typing import Optional
 from datetime import datetime
 
 from pydantic import BaseModel, Field, constr
 
 
 class Error(BaseModel):
-    message: Optional[str] = Field(None, description='Simple message for user')
-    description: Optional[str] = Field(
+    message: str = Field(None, description='Simple message for user')
+    description: str = Field(
         None, description='Technical description of the problem'
     )
 
@@ -36,12 +36,12 @@ class Activity(BaseModel):
     id: int
 
 
-class ActivitiesRequest(BaseModel):
-    page_index: int
+class ActivitiesFilter(BaseModel):
+    page_index: int = Field(ge=1)
     page_size: int
-    activity_type: Union[str, None]
-    start_date: Union[datetime, None]
-    end_date: Union[datetime, None]
+    activity_type: Optional[constr(min_length=1)]
+    start_date: Optional[datetime]
+    end_date: Optional[datetime]
 
 
 class IncorrectUser(Exception):
