@@ -169,10 +169,10 @@ def get_list():
     page_number = st.number_input("Page Number", min_value=1, value=1)
 
     activity_filter =\
-        (f"?page_index={page_number}"
-         f"&page_size={page_size}"
-         f"&start_date={start_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ')}"
-         f"&end_date={end_date.strftime('%Y-%m-%dT%H:%M:%S.%fZ')}")
+        (f'?page_index={page_number}'
+         f'&page_size={page_size}'
+         f'&start_date={start_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")}'
+         f'&end_date={end_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")}')
     if activity_select:
         activity_filter += f"&activity_type={activity_select}"
     headers = {'Authorization': 'Bearer ' + st.session_state['access_token']}
