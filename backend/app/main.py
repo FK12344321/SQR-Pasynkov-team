@@ -10,6 +10,7 @@ from fastapi.responses import JSONResponse
 from app.routers import auth, activities
 from app.models import Error, IncorrectUser, IncorrectToken
 
+
 app = FastAPI(
     title='InnoTrackify API',
     description='API used for our application InnoTrackify.',
@@ -46,5 +47,16 @@ async def incorrect_token_exception_handler(request: Request, exc: IncorrectUser
         content=Error(
             message=f'Incorrect authorization {exc.token_type} token',
             description='Your token must be taken from login() or refresh_token() methods',
+        ).model_dump(mode='json')
+    )
+
+
+@app.exception_handler(Exception)
+async def internal_error_handler(request: Request, exc: Exception):
+    return JSONResponse(
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        content=Error(
+            message='Something went wrong',
+            description='Internal Server Error, something went wrong',
         ).model_dump(mode='json')
     )
