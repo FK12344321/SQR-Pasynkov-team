@@ -37,7 +37,8 @@ def sign_up(username, password):
 
 
 def renew_token():
-    r = requests.get(f'{API}/auth/token', data=json.dumps({'refresh_token': st.session_state['refresh_token']}))
+    headers = {'Authorization': 'Bearer ' + st.session_state['refresh_token']}
+    r = requests.get(f'{API}/auth/token', headers=headers)
     if r.status_code != 200:
         return False
     st.session_state['access_token'] = r.json()['access_token']
