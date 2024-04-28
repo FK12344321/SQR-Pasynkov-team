@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
+from prometheus_fastapi_instrumentator import Instrumentator
 
 from app.routers import auth, activities
 from app.models import Error, IncorrectUser, IncorrectToken
@@ -15,6 +16,8 @@ app = FastAPI(
               'description': 'local server'},
              {'url': 'http://10.90.137.146/:8000/api'}],
 )
+
+Instrumentator().instrument(app).expose(app)
 
 app.include_router(auth.router)
 app.include_router(activities.router)

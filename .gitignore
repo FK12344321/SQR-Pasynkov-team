@@ -1,2 +1,8 @@
 /frontend/venv
 .idea/*
+monitoring/prometheus_data/*
+**/__pychache__/*
+**/.venv/*
+**/*.pyc
+monitoring/prometheus/consoles
+monitoring/prometheus/console_libraries

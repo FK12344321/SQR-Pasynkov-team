@@ -19,6 +19,9 @@ uvicorn = "^0.29.0"
 bcrypt = "^4.1.2"
 pyjwt = "^2.8.0"
 pydantic-settings = "^2.2.1"
+prometheus-fastapi-instrumentator = "^7.0.0"
+prometheus-client = "^0.20.0"
+slowapi = "^0.1.9"
 
 
 [tool.poetry.group.dev.dependencies]
