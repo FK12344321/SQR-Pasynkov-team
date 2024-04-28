@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from slowapi import limiter
 from typing import List, Annotated, Optional
 from datetime import datetime
 
@@ -23,7 +22,6 @@ router = APIRouter(tags=['activities'])
     },
     tags=['activities'],
 )
-@limiter.limit("200/minute")
 def add_activity(
         user: Annotated[User, Depends(get_current_user)],
         activity: ActivityCreate,
@@ -41,7 +39,6 @@ def add_activity(
     },
     tags=['activities'],
 )
-@limiter.limit("50/minute")
 def get_activity_list(
         user: Annotated[User, Depends(get_current_user)],
         page_index: int,

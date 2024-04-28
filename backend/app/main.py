@@ -1,11 +1,15 @@
 from __future__ import annotations
 
-from fastapi import FastAPI, Request, status
+from fastapi import FastAPI, Request, Response, status
 from fastapi.responses import JSONResponse
 from prometheus_fastapi_instrumentator import Instrumentator
 
 from app.routers import auth, activities
 from app.models import Error, IncorrectUser, IncorrectToken
+
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
+from slowapi.errors import RateLimitExceeded
 
 
 app = FastAPI(
@@ -16,6 +20,9 @@ app = FastAPI(
               'description': 'local server'},
              {'url': 'http://10.90.137.146/:8000/api'}],
 )
+limiter = Limiter(get_remote_address)
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
+app.state.limiter = limiter
 
 Instrumentator().instrument(app).expose(app)
 
@@ -24,7 +31,8 @@ app.include_router(activities.router)
 
 
 @app.get("/")
-async def root():
+@limiter.limit("5/minute")
+async def root(request: Request, response: Response):
     return {"message": "Gateway of the App"}
 
 

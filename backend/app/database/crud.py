@@ -38,7 +38,7 @@ def get_activities(
         condition = DB_Activity.start_date > activity_params.start_date
         conditions.append(condition)
     if activity_params.end_date:
-        condition = DB_Activity.end_date > activity_params.end_date
+        condition = DB_Activity.start_date < activity_params.end_date
         conditions.append(condition)
     if activity_params.activity_type:
         condition = DB_Activity.activity_type == activity_params.activity_type
