@@ -148,7 +148,7 @@ jobs:
     name: Coverage front
     needs: changes
     runs-on: ubuntu-latest
-    if: ${{ needs.changes.outputs.backend == 'true' || github.event_name == 'pull_request'}}    
+    if: ${{ needs.changes.outputs.frontend == 'true' || github.event_name == 'pull_request'}}    
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -177,7 +177,7 @@ jobs:
     name: Flake 8 front
     needs: changes
     runs-on: ubuntu-latest
-    if: ${{ needs.changes.outputs.backend == 'true' || github.event_name == 'pull_request'}}    
+    if: ${{ needs.changes.outputs.frontend == 'true' || github.event_name == 'pull_request'}}    
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -206,7 +206,7 @@ jobs:
     name: Bandit front
     needs: changes
     runs-on: ubuntu-latest
-    if: ${{ needs.changes.outputs.backend == 'true' || github.event_name == 'pull_request'}}    
+    if: ${{ needs.changes.outputs.frontend == 'true' || github.event_name == 'pull_request'}}    
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -235,7 +235,7 @@ jobs:
     name: Unit Tests front
     needs: changes
     runs-on: ubuntu-latest
-    if: ${{ needs.changes.outputs.backend == 'true' || github.event_name == 'pull_request'}}    
+    if: ${{ needs.changes.outputs.frontend == 'true' || github.event_name == 'pull_request'}}    
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
