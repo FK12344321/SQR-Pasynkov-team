@@ -16,18 +16,19 @@ jobs:
       backend: ${{ steps.filter.outputs.backend }}
       frontend: ${{ steps.filter.outputs.frontend }}
     steps:
-    # For pull requests it's not necessary to checkout the code
-    - uses: dorny/paths-filter@v3
-      id: filter
-      with:
-        filters: |
-          backend:
-            - 'backend/**'
-          frontend:
-            - 'frontend/**'
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
 
   coverage-back:
     name: Coverage back
+    needs: changes
     runs-on: ubuntu-latest
     if: ${{ needs.changes.outputs.backend == 'true' || github.event_name == 'pull_request'}}    
     
@@ -57,6 +58,7 @@ jobs:
   
   flake-back:
     name: Flake 8 back
+    needs: changes
     runs-on: ubuntu-latest
     if: ${{ needs.changes.outputs.backend == 'true' || github.event_name == 'pull_request'}}    
     steps:
@@ -85,6 +87,7 @@ jobs:
   
   bandit-back:
     name: Bandit back
+    needs: changes
     runs-on: ubuntu-latest
     if: ${{ needs.changes.outputs.backend == 'true' || github.event_name == 'pull_request'}}    
     steps:
@@ -113,6 +116,7 @@ jobs:
 
   unit-tests-back:
     name: Unit Tests back
+    needs: changes
     runs-on: ubuntu-latest
     if: ${{ needs.changes.outputs.backend == 'true' || github.event_name == 'pull_request'}}    
     steps:
@@ -142,6 +146,7 @@ jobs:
 
   coverage-front:
     name: Coverage front
+    needs: changes
     runs-on: ubuntu-latest
     if: ${{ needs.changes.outputs.backend == 'true' || github.event_name == 'pull_request'}}    
     steps:
@@ -170,6 +175,7 @@ jobs:
   
   flake-front:
     name: Flake 8 front
+    needs: changes
     runs-on: ubuntu-latest
     if: ${{ needs.changes.outputs.backend == 'true' || github.event_name == 'pull_request'}}    
     steps:
@@ -198,6 +204,7 @@ jobs:
   
   bandit-front:
     name: Bandit front
+    needs: changes
     runs-on: ubuntu-latest
     if: ${{ needs.changes.outputs.backend == 'true' || github.event_name == 'pull_request'}}    
     steps:
@@ -226,6 +233,7 @@ jobs:
 
   unit-tests-front:
     name: Unit Tests front
+    needs: changes
     runs-on: ubuntu-latest
     if: ${{ needs.changes.outputs.backend == 'true' || github.event_name == 'pull_request'}}    
     steps:
