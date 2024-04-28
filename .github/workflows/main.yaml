@@ -5,10 +5,32 @@ on:
   pull_request:
 
 jobs:
+  # JOB to run change detection
+  changes:
+    runs-on: ubuntu-latest
+    # Required permissions
+    permissions:
+      pull-requests: read
+    # Set job outputs to values from filter step
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+      frontend: ${{ steps.filter.outputs.frontend }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/**'
+            frontend:
+              - 'frontend/**'
+
   coverage-back:
     name: Coverage back
+    needs: changes
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'backend/') || contains(github.event.head_commit.added, 'backend/') || contains(github.event.head_commit.removed, 'backend/') || github.event_name == 'pull_request'}}    
+    if: ${{ needs.changes.outputs.backend == 'true' || github.event_name == 'pull_request'}}    
     
     steps:
       - uses: actions/checkout@v4
@@ -36,8 +58,9 @@ jobs:
   
   flake-back:
     name: Flake 8 back
+    needs: changes
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'backend/') || contains(github.event.head_commit.added, 'backend/') || contains(github.event.head_commit.removed, 'backend/') || github.event_name == 'pull_request'}}
+    if: ${{ needs.changes.outputs.backend == 'true' || github.event_name == 'pull_request'}}    
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -64,8 +87,9 @@ jobs:
   
   bandit-back:
     name: Bandit back
+    needs: changes
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'backend/') || contains(github.event.head_commit.added, 'backend/') || contains(github.event.head_commit.removed, 'backend/') || github.event_name == 'pull_request'}}
+    if: ${{ needs.changes.outputs.backend == 'true' || github.event_name == 'pull_request'}}    
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -92,8 +116,9 @@ jobs:
 
   unit-tests-back:
     name: Unit Tests back
+    needs: changes
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'backend/') || contains(github.event.head_commit.added, 'backend/') || contains(github.event.head_commit.removed, 'backend/') || github.event_name == 'pull_request'}}
+    if: ${{ needs.changes.outputs.backend == 'true' || github.event_name == 'pull_request'}}    
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -121,8 +146,9 @@ jobs:
 
   coverage-front:
     name: Coverage front
+    needs: changes
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'frontend/') || contains(github.event.head_commit.added, 'frontend/') || contains(github.event.head_commit.removed, 'frontend/') || github.event_name == 'pull_request'}}
+    if: ${{ needs.changes.outputs.frontend == 'true' || github.event_name == 'pull_request'}}    
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -149,8 +175,9 @@ jobs:
   
   flake-front:
     name: Flake 8 front
+    needs: changes
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'frontend/') || contains(github.event.head_commit.added, 'frontend/') || contains(github.event.head_commit.removed, 'frontend/') || github.event_name == 'pull_request'}}
+    if: ${{ needs.changes.outputs.frontend == 'true' || github.event_name == 'pull_request'}}    
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -177,8 +204,9 @@ jobs:
   
   bandit-front:
     name: Bandit front
+    needs: changes
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'frontend/') || contains(github.event.head_commit.added, 'frontend/') || contains(github.event.head_commit.removed, 'frontend/') || github.event_name == 'pull_request'}}
+    if: ${{ needs.changes.outputs.frontend == 'true' || github.event_name == 'pull_request'}}    
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -205,8 +233,9 @@ jobs:
 
   unit-tests-front:
     name: Unit Tests front
+    needs: changes
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'frontend/') || contains(github.event.head_commit.added, 'frontend/') || contains(github.event.head_commit.removed, 'frontend/') || github.event_name == 'pull_request'}}
+    if: ${{ needs.changes.outputs.frontend == 'true' || github.event_name == 'pull_request'}}    
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
