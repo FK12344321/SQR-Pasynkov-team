@@ -7,3 +7,4 @@ monitoring/prometheus_data/*
 monitoring/prometheus/consoles
 monitoring/prometheus/console_libraries
 *pycache*/*
+__pycache__

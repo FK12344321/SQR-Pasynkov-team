@@ -231,8 +231,8 @@ jobs:
         working-directory: ./frontend
         run: poetry run bandit -r app/
 
-  unit-tests-front:
-    name: Unit Tests front
+  tests-front:
+    name:  Tests front
     needs: changes
     runs-on: ubuntu-latest
     if: ${{ needs.changes.outputs.frontend == 'true' || github.event_name == 'pull_request'}}    
@@ -256,6 +256,6 @@ jobs:
       - name: Install dependencies
         run: poetry install
         working-directory: ./frontend
-      - name: Run unit tests
+      - name: Run tests
         working-directory: ./frontend
-        run: poetry run pytest tests/unit
+        run: poetry run pytest tests/
