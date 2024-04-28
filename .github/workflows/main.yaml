@@ -5,10 +5,11 @@ on:
   pull_request:
 
 jobs:
-  coverage:
-    name: Coverage
+  coverage-back:
+    name: Coverage back
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'backend/') || contains(github.event.head_commit.added, 'backend/') || contains(github.event.head_commit.removed, 'backend/') || github.event_name == 'pull_request'}}    
+    
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -31,12 +32,12 @@ jobs:
         run: poetry install
       - name: Run coverage
         working-directory: ./backend
-        run: poetry run pytest --cov=app/ --cov-branch --cov-report=term --cov-fail-under=0
+        run: poetry run pytest --cov=app/ --cov-branch --cov-report=term --cov-fail-under=70
   
-  flake:
-    name: Flake 8
+  flake-back:
+    name: Flake 8 back
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'backend/') || contains(github.event.head_commit.added, 'backend/') || contains(github.event.head_commit.removed, 'backend/') || github.event_name == 'pull_request'}}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -61,10 +62,10 @@ jobs:
         working-directory: ./backend
         run: poetry run flake8 --max-complexity=10
   
-  bandit:
-    name: Bandit
+  bandit-back:
+    name: Bandit back
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'backend/') || contains(github.event.head_commit.added, 'backend/') || contains(github.event.head_commit.removed, 'backend/') || github.event_name == 'pull_request'}}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -89,10 +90,10 @@ jobs:
         working-directory: ./backend
         run: poetry run bandit -r app/
 
-  unit-tests:
-    name: Unit Tests
+  unit-tests-back:
+    name: Unit Tests back
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'backend/') || contains(github.event.head_commit.added, 'backend/') || contains(github.event.head_commit.removed, 'backend/') || github.event_name == 'pull_request'}}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -110,15 +111,102 @@ jobs:
           key: ${{ runner.os }}-poetry-${{ hashFiles('backend/poetry.lock') }}
           restore-keys: |
             ${{ runner.os }}-poetry-
-      # - name: Install dependencies
-      #   run: poetry install
-      # - name: Run unit tests
-      #   run: poetry run pytest tests/unit
+      - name: Install dependencies
+        run: poetry install
+        working-directory: ./backend
+      - name: Run unit tests
+        working-directory: ./backend
+        run: poetry run pytest tests/unit
 
-  e2e-tests:
-    name: End-to-End Tests
+
+  coverage-front:
+    name: Coverage front
     runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'frontend/') || contains(github.event.head_commit.added, 'frontend/') || contains(github.event.head_commit.removed, 'frontend/') || github.event_name == 'pull_request'}}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: '1.7.1'
+      - name: Cache Poetry virtual environment
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ hashFiles('frontend/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: poetry install
+      - name: Run coverage
+        working-directory: ./frontend
+        run: poetry run pytest --cov=src/ --cov-branch --cov-report=term --cov-fail-under=25
+  
+  flake-front:
+    name: Flake 8 front
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'frontend/') || contains(github.event.head_commit.added, 'frontend/') || contains(github.event.head_commit.removed, 'frontend/') || github.event_name == 'pull_request'}}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: '1.7.1'
+      - name: Cache Poetry virtual environment
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ hashFiles('frontend/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: poetry install
+      - name: Run flake8
+        working-directory: ./frontend
+        run: poetry run flake8 --max-complexity=10
+  
+  bandit-front:
+    name: Bandit front
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'frontend/') || contains(github.event.head_commit.added, 'frontend/') || contains(github.event.head_commit.removed, 'frontend/') || github.event_name == 'pull_request'}}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+      - name: Install Poetry
+        uses: abatilo/actions-poetry@v2
+        with:
+          poetry-version: '1.7.1'
+      - name: Cache Poetry virtual environment
+        uses: actions/cache@v2
+        with:
+          path: ~/.cache/pypoetry
+          key: ${{ runner.os }}-poetry-${{ hashFiles('frontend/poetry.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-poetry-
+      - name: Install dependencies
+        working-directory: ./frontend
+        run: poetry install
+      - name: Run bandit
+        working-directory: ./frontend
+        run: poetry run bandit -r app/
+
+  unit-tests-front:
+    name: Unit Tests front
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'frontend/') || contains(github.event.head_commit.added, 'frontend/') || contains(github.event.head_commit.removed, 'frontend/') || github.event_name == 'pull_request'}}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -133,10 +221,12 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ~/.cache/pypoetry
-          key: ${{ runner.os }}-poetry-${{ hashFiles('backend/poetry.lock') }}
+          key: ${{ runner.os }}-poetry-${{ hashFiles('frontend/poetry.lock') }}
           restore-keys: |
             ${{ runner.os }}-poetry-
-      # - name: Install dependencies
-      #   run: poetry install
-      # - name: Run end-to-end tests
-      #   run: poetry run pytest tests/e2e
+      - name: Install dependencies
+        run: poetry install
+        working-directory: ./frontend
+      - name: Run unit tests
+        working-directory: ./frontend
+        run: poetry run pytest tests/unit

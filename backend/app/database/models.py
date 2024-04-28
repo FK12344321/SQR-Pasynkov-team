@@ -2,7 +2,10 @@ from datetime import datetime
 
 from sqlalchemy import create_engine, Column, Integer, String, ForeignKey, DateTime  # noqa: E501
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, sessionmaker
+
+from app.config import get_settings
+
 
 Base = declarative_base()
 
@@ -30,5 +33,7 @@ class Activity(Base):
     user = relationship('User', back_populates='activities')
 
 
-engine = create_engine('sqlite:///pasynkov.db')
+settings = get_settings()
+engine = create_engine('sqlite://' + settings.db_file_path)
 Base.metadata.create_all(engine)
+session_maker = sessionmaker(bind=engine)

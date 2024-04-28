@@ -44,17 +44,17 @@ volumes:
     driver: local
     driver_opts:
       type: none
-      device: prometheus
+      device: /root/prometheus
       o: bind
   prometheus-data: 
     driver: local
     driver_opts:
       type: none
-      device: prometheus_data
+      device: /root/prometheus_data
       o: bind
   grafana-dashboards: 
     driver: local
     driver_opts:
       type: none
-      device: grafana_dashboards
+      device: /root/grafana_dashboards
       o: bind
