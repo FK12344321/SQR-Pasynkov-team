@@ -8,7 +8,7 @@ jobs:
   coverage-back:
     name: Coverage back
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'backend/') || contains(github.event.head_commit.added, 'backend/') || contains(github.event.head_commit.removed, 'backend/') }}    
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'backend/') || contains(github.event.head_commit.added, 'backend/') || contains(github.event.head_commit.removed, 'backend/') || github.event_name == 'pull_request'}}    
     
     steps:
       - uses: actions/checkout@v4
@@ -37,7 +37,7 @@ jobs:
   flake-back:
     name: Flake 8 back
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'backend/') || contains(github.event.head_commit.added, 'backend/') || contains(github.event.head_commit.removed, 'backend/') }}
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'backend/') || contains(github.event.head_commit.added, 'backend/') || contains(github.event.head_commit.removed, 'backend/') || github.event_name == 'pull_request'}}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -65,7 +65,7 @@ jobs:
   bandit-back:
     name: Bandit back
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'backend/') || contains(github.event.head_commit.added, 'backend/') || contains(github.event.head_commit.removed, 'backend/') }}
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'backend/') || contains(github.event.head_commit.added, 'backend/') || contains(github.event.head_commit.removed, 'backend/') || github.event_name == 'pull_request'}}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -93,7 +93,7 @@ jobs:
   unit-tests-back:
     name: Unit Tests back
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'backend/') || contains(github.event.head_commit.added, 'backend/') || contains(github.event.head_commit.removed, 'backend/') }}
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'backend/') || contains(github.event.head_commit.added, 'backend/') || contains(github.event.head_commit.removed, 'backend/') || github.event_name == 'pull_request'}}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -122,7 +122,7 @@ jobs:
   coverage-front:
     name: Coverage front
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'frontend/') || contains(github.event.head_commit.added, 'frontend/') || contains(github.event.head_commit.removed, 'frontend/') }}
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'frontend/') || contains(github.event.head_commit.added, 'frontend/') || contains(github.event.head_commit.removed, 'frontend/') || github.event_name == 'pull_request'}}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -150,7 +150,7 @@ jobs:
   flake-front:
     name: Flake 8 front
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'frontend/') || contains(github.event.head_commit.added, 'frontend/') || contains(github.event.head_commit.removed, 'frontend/') }}
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'frontend/') || contains(github.event.head_commit.added, 'frontend/') || contains(github.event.head_commit.removed, 'frontend/') || github.event_name == 'pull_request'}}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -178,7 +178,7 @@ jobs:
   bandit-front:
     name: Bandit front
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'frontend/') || contains(github.event.head_commit.added, 'frontend/') || contains(github.event.head_commit.removed, 'frontend/') }}
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'frontend/') || contains(github.event.head_commit.added, 'frontend/') || contains(github.event.head_commit.removed, 'frontend/') || github.event_name == 'pull_request'}}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
@@ -206,7 +206,7 @@ jobs:
   unit-tests-front:
     name: Unit Tests front
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'frontend/') || contains(github.event.head_commit.added, 'frontend/') || contains(github.event.head_commit.removed, 'frontend/') }}
+    if: ${{ github.event_name == 'push' && contains(github.event.head_commit.modified, 'frontend/') || contains(github.event.head_commit.added, 'frontend/') || contains(github.event.head_commit.removed, 'frontend/') || github.event_name == 'pull_request'}}
     steps:
       - uses: actions/checkout@v4
       - name: Set up Python
