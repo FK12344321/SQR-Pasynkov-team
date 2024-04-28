@@ -1,20 +1,19 @@
-from main import authenticate, sign_up, renew_token, validate_time_format, post_activity
-import sys
-import os
+from src.main import authenticate, sign_up, renew_token, \
+      validate_time_format, post_activity
 import pytest
-import json
 from unittest.mock import patch
 
-# Adjust Python path to ensure local modules can be imported
-sys.path.append(os.path.abspath(
-    os.path.join(os.path.dirname(__file__), '../../')))
+# # Adjust Python path to ensure local modules can be imported
+# sys.path.append(os.path.abspath(
+#     os.path.join(os.path.dirname(__file__), '../../')))
 
 
 @pytest.fixture(autouse=True)
 def setup_session_state():
     with patch('streamlit.session_state', new_callable=dict) as mock_session:
         mock_session.update(
-            {'access_token': 'fake_access_token', 'refresh_token': 'fake_refresh_token'})
+            {'access_token': 'fake_access_token',
+             'refresh_token': 'fake_refresh_token'})
         yield
 
 
@@ -62,7 +61,8 @@ def test_sign_up_failure(mock_requests):
 def test_renew_token_success(mock_requests_get):
     mock_requests_get.return_value.status_code = 200
     mock_requests_get.return_value.json.return_value = {
-        'access_token': 'renewed_token', 'refresh_token': 'renewed_refresh_token'}
+        'access_token': 'renewed_token',
+        'refresh_token': 'renewed_refresh_token'}
     assert renew_token() is True
 
 
@@ -88,9 +88,9 @@ def test_validate_time_format(time_input, expected):
 
 def test_post_activity_success(mock_requests):
     mock_requests.return_value.status_code = 200
-    assert post_activity(2, 30, 45, 'Running').status_code is 200
+    assert post_activity(2, 30, 45, 'Running').status_code == 200
 
 
 def test_post_activity_invalid_time(mock_requests):
     mock_requests.return_value.status_code = 402
-    assert post_activity(25, 61, 61, 'Swimming').status_code is not 200
+    assert post_activity(25, 61, 61, 'Swimming').status_code != 200

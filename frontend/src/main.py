@@ -54,8 +54,8 @@ def convert_seconds(seconds):
 
 
 def validate_time_format(input_text):
-    # pattern = re.compile(r'^([0-1]?[0-9]|2[0-3]):([0-5]?[0-9]):([0-5]?[0-9])$')
-    pattern = re.compile(r'^(\d+|0?[0-9]|1[0-9]|2[0-3]):([0-5]?[0-9]):([0-5]?[0-9])$')
+    pattern = re.compile(
+        r'^(\d+|0?[0-9]|1[0-9]|2[0-3]):([0-5]?[0-9]):([0-5]?[0-9])$')
     if pattern.match(input_text):
         return True
     else:
@@ -63,7 +63,8 @@ def validate_time_format(input_text):
 
 
 def post_activity(hour, minutes, seconds, activity_select):
-    time_delta = datetime.timedelta(hours=hour, minutes=minutes, seconds=seconds)
+    time_delta = datetime.timedelta(
+        hours=hour, minutes=minutes, seconds=seconds)
     end_date = datetime.datetime.now()
     start_date = end_date - time_delta
     body = {
@@ -72,11 +73,14 @@ def post_activity(hour, minutes, seconds, activity_select):
         "end_date": end_date.strftime("%Y-%m-%dT%H:%M:%S.%fZ")
     }
     headers = {'Authorization': 'Bearer ' + st.session_state['access_token']}
-    r = requests.post(f'{API}/activity', data=json.dumps(body), headers=headers)
+    r = requests.post(f'{API}/activity',
+                      data=json.dumps(body), headers=headers)
     if r.status_code == 401:
         renew_token()
-        headers = {'Authorization': 'Bearer ' + st.session_state['access_token']}
-        r = requests.get(f'{API}/activity', data=json.dumps(body), headers=headers)
+        headers = {'Authorization': 'Bearer ' +
+                   st.session_state['access_token']}
+        r = requests.get(f'{API}/activity',
+                         data=json.dumps(body), headers=headers)
     return r
 
 
@@ -118,23 +122,28 @@ def get_timer_page():
     if pause_button:
         if 'elapsed_time' in st.session_state:
             st.session_state['paused_time'] = st.session_state['elapsed_time']
-            hour, minutes, seconds = convert_seconds(st.session_state['paused_time'])
+            hour, minutes, seconds = convert_seconds(
+                st.session_state['paused_time'])
             timer_output.write(f"{hour:02}:{minutes:02}:{seconds:02}")
             del st.session_state['elapsed_time']
 
     if save_button:
         if 'paused_time' in st.session_state:
-            hour, minutes, seconds = convert_seconds(st.session_state['paused_time'])
+            hour, minutes, seconds = convert_seconds(
+                st.session_state['paused_time'])
             r = post_activity(hour, minutes, seconds, activity_select)
             if r.status_code == 200:
-                st.success(f"Saved activity: {activity_select}, Time: {hour}:{minutes}:{seconds}")
+                st.success(
+                    f"Saved activity:\
+                    {activity_select}, Time: {hour}:{minutes}:{seconds}")
                 del st.session_state['paused_time']
             else:
                 st.error("Error saving activity")
 
     while 'elapsed_time' in st.session_state:
         st.session_state['elapsed_time'] += 1
-        hour, minutes, seconds = convert_seconds(st.session_state['elapsed_time'])
+        hour, minutes, seconds = convert_seconds(
+            st.session_state['elapsed_time'])
         timer_output.write(f"{hour:02}:{minutes:02}:{seconds:02}")
         time.sleep(1)
 
@@ -149,7 +158,9 @@ def get_form_page():
                 hours, minutes, seconds = map(int, time_select.split(':'))
                 r = post_activity(hours, minutes, seconds, activity_select)
                 if r.status_code == 200:
-                    st.success(f"Saved activity: {activity_select}, Time: {time_select}")
+                    st.success(
+                        f"Saved activity: {activity_select},\
+                          Time: {time_select}")
                 else:
                     st.error("Error saving activity")
             else:
@@ -179,12 +190,14 @@ def get_list():
     r = requests.get(f'{API}/activity' + activity_filter, headers=headers)
     if r.status_code == 401:
         renew_token()
-        headers = {'Authorization': 'Bearer ' + st.session_state['access_token']}
+        headers = {'Authorization': 'Bearer ' +
+                   st.session_state['access_token']}
         r = requests.get(f'{API}/activity' + activity_filter, headers=headers)
     if r.status_code != 200:
         return
     array = r.json()
-    df = pd.DataFrame(array, columns=["activity_type", "start_date", "end_date"])
+    df = pd.DataFrame(
+        array, columns=["activity_type", "start_date", "end_date"])
     st.dataframe(df, hide_index=True, use_container_width=True)
 
 
@@ -194,7 +207,9 @@ def main():
     if 'auth' not in st.session_state or st.session_state['auth'] is False:
         get_auth_page()
     else:
-        page = st.sidebar.radio("Pages", ['Use timer', 'Add activity', 'Show activities'], key='sidebar')
+        page = st.sidebar.radio(
+            "Pages", ['Use timer', 'Add activity', 'Show activities'],
+            key='sidebar')
         st.session_state['page'] = page
         if st.session_state['page'] == 'Use timer':
             get_timer_page()
