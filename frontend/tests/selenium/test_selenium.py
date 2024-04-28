@@ -3,7 +3,6 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.by import By
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.common.exceptions import NoSuchElementException
 from time import sleep
@@ -120,8 +119,9 @@ def test_log_in_user():
         elements = driver.find_elements(By.TAG_NAME, 'p')
         # for it in elements:
         # print(it.text)
-        assert any(
-            it.text == "Saved activity: selenium_test_bullshit, Time: 11:11:11" for it in elements) == True
+        assert (any(
+            it.text == "Saved activity: selenium_test_bullshit, Time: 11:11:11"
+            for it in elements) is True)
 
     finally:
         # Close the browser window
