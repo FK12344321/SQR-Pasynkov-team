@@ -31,7 +31,7 @@ jobs:
         run: poetry install
       - name: Run coverage
         working-directory: ./backend
-        run: poetry run pytest --cov=app/ --cov-branch --cov-report=term --cov-fail-under=0
+        run: poetry run pytest --cov=app/ --cov-branch --cov-report=term --cov-fail-under=60
   
   flake:
     name: Flake 8
@@ -115,28 +115,28 @@ jobs:
       # - name: Run unit tests
       #   run: poetry run pytest tests/unit
 
-  e2e-tests:
-    name: End-to-End Tests
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    steps:
-      - uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.12'
-      - name: Install Poetry
-        uses: abatilo/actions-poetry@v2
-        with:
-          poetry-version: '1.7.1'
-      - name: Cache Poetry virtual environment
-        uses: actions/cache@v2
-        with:
-          path: ~/.cache/pypoetry
-          key: ${{ runner.os }}-poetry-${{ hashFiles('backend/poetry.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-poetry-
-      # - name: Install dependencies
-      #   run: poetry install
-      # - name: Run end-to-end tests
-      #   run: poetry run pytest tests/e2e
+  # e2e-tests:
+  #   name: End-to-End Tests
+  #   runs-on: ubuntu-latest
+  #   if: github.event_name == 'pull_request'
+  #   steps:
+  #     - uses: actions/checkout@v4
+  #     - name: Set up Python
+  #       uses: actions/setup-python@v4
+  #       with:
+  #         python-version: '3.12'
+  #     - name: Install Poetry
+  #       uses: abatilo/actions-poetry@v2
+  #       with:
+  #         poetry-version: '1.7.1'
+  #     - name: Cache Poetry virtual environment
+  #       uses: actions/cache@v2
+  #       with:
+  #         path: ~/.cache/pypoetry
+  #         key: ${{ runner.os }}-poetry-${{ hashFiles('backend/poetry.lock') }}
+  #         restore-keys: |
+  #           ${{ runner.os }}-poetry-
+  #     # - name: Install dependencies
+  #     #   run: poetry install
+  #     # - name: Run end-to-end tests
+  #     #   run: poetry run pytest tests/e2e
