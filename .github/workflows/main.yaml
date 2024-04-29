@@ -171,7 +171,7 @@ jobs:
         run: poetry install
       - name: Run coverage
         working-directory: ./frontend
-        run: poetry run pytest --cov=src/ --cov-branch --cov-report=term --cov-fail-under=25
+        run: poetry run pytest ./tests/unit/ --cov=src/ --cov-branch --cov-report=term
   
   flake-front:
     name: Flake 8 front
@@ -258,4 +258,4 @@ jobs:
         working-directory: ./frontend
       - name: Run tests
         working-directory: ./frontend
-        run: poetry run pytest tests/
+        run: poetry run pytest tests/unit

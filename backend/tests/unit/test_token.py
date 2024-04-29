@@ -14,7 +14,6 @@ def test_generate_token_from_user():
     assert token_result.access_token is not None
 
 
-@pytest.mark.unit
 def test_decode_token():
     # Prepare a sample payload that reflects a valid decoded JWT structure
     sample_payload = {'username': 'test_user'}
