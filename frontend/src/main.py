@@ -175,7 +175,8 @@ def get_list():
         start_date = st.date_input("Start Date")
     with cols[2]:
         end_date = st.date_input("End Date")
-        end_date = datetime.datetime.combine(end_date, datetime.datetime.max.time())
+        end_date = datetime.datetime.combine(end_date,
+                                             datetime.datetime.max.time())
 
     page_size = 5
     page_number = st.number_input("Page Number", min_value=1, value=1)
