@@ -18,7 +18,7 @@ app = FastAPI(
     version='0.1.0',
     servers=[{'url': 'http://localhost:8000/api',
               'description': 'local server'},
-             {'url': 'http://10.90.137.146/:8000/api'}],
+             {'url': 'http://10.90.137.146:8000'}],
 )
 limiter = Limiter(get_remote_address)
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)

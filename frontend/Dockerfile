@@ -1,7 +1,7 @@
 FROM python:3.11
 WORKDIR /app
 COPY poetry.lock pyproject.toml ./
-ENV PIP_DEFAULT_TIMEOUT=600
+ENV PIP_DEFAULT_TIMEOUT=900
 RUN pip install poetry && poetry install --no-root
 COPY src/*.py ./
 EXPOSE 9000
